@@ -4,6 +4,10 @@ var colorDefs = {
   default: '#268ed9',
 };
 
+var themeSelf = [
+  { id: 1, label: 'Self Mastery', color: '#e3342f', weight: 3, },
+];
+
 var themes = [
   //{ id: 1, label: 'Self Mastery', color: '#e3342f', weight: 3, },
   { id: 2, label: 'Agile and Lean Practitioner', color: '#f6993f', weight: 2 },
@@ -67,6 +71,24 @@ var employee_1 = [
   { id: 21, value: 1 },
 ];
 
+function makeSeriesDataSelf(employeeInput) {
+  if (Array.isArray(employeeInput)) {
+    return competenciesSelf.map((theme) => {
+      const ei = employeeInput.find((eInfo) => {
+        return theme.id === eInfo.id;
+      });
+      if (!ei) {
+        return { x: theme.label, value: 0, color: 'gray' };
+      }
+      const group = themeSelf.find((g) => g.id === theme.group);
+      return { x: theme.label, value: ei.value, color: group.color };
+    });
+  }
+  return [
+    { x: 'NO DATA', value: 0 },
+  ];
+}
+
 function makeSeriesData(employeeInput) {
   if (Array.isArray(employeeInput)) {
     return competenciesWheel.map((theme) => {
@@ -109,7 +131,7 @@ function drawWheel()
   anychart.theme('darkGlamour');
   var chart = anychart.polar();
   
-  // Sample series data
+  // Make series data
   var data1 = makeSeriesData(employee_1);
   
   // set x-scale
@@ -187,18 +209,39 @@ function drawWheel()
   chart.padding({ bottom: 20 });
   chart.draw();
 
+  var chartSelf = anychart.column();
+  var data2 = makeSeriesDataSelf(employee_1);
+  var dataSelf = [];
+  data2.forEach((dataItem, index, all) =>
+    {
+      var columnDataItem = [ dataItem.x, dataItem.value];
+      dataSelf.push(columnDataItem);
+    }
+  );
+  var seriesSelf = chartSelf.column(dataSelf);
+  chartSelf.yScale()
+    .minimum(0)
+    .maximum(5)
+    .ticks({ interval: 1 });
+  chartSelf.container('containerSelfMastery');
+  chartSelf.draw();
+
+
   localStorage.setObj("self-assessment", employee_1);
-  addExportButton(chart);
+  addExportButton(chart, "Export wheel PNG", "wheel", "cellWheel");
+  addExportButton(chartSelf, "Export column PNG", "column", "cellColumn");
 }
 
-function addExportButton(chart)
+function addExportButton(chart, buttonText, filename, parentElement)
 {
   var exportButton = document.createElement('button');
-  exportButton.textContent = 'Export as PNG';
+  exportButton.textContent = buttonText;
   exportButton.addEventListener('click', function () {
-    chart.saveAsPng();
+    chart.saveAsPng({"filename":filename});
   });
-  document.body.appendChild(exportButton);
+  exportButton.style.marginTop = "10px";
+  var parent = document.getElementById(parentElement);
+  parent.appendChild(exportButton);
 }
 
 //anychart.onDocumentReady(drawWheel);
@@ -216,25 +259,32 @@ window.onload = function(){
     employee_1 = self_assessment;
   }
 
+  var elementsOffset = 0;
+  addDataManipulationUIElements(competenciesSelf, elementsOffset);
+
+  elementsOffset = 3;
+  addDataManipulationUIElements(competenciesWheel, elementsOffset);
+};
+
+function addDataManipulationUIElements(competenciesWheel, elementsOffset) {
   var competenciesCount = competenciesWheel.length;
-  for (var i=0; i < competenciesCount; i++)
-  {
+  for (var i = 0; i < competenciesCount; i++) {
     var form = document.getElementById("data");
 
     var selectLabel = document.createElement('label');
     selectLabel.innerText = competenciesWheel[i].label + ":";
     form.appendChild(selectLabel);
-    
+
     var selectItem = document.createElement('select');
     selectItem.name = competenciesWheel[i].label;
-    selectItem.id = "competency" + (i+3);
-    
+    selectItem.id = "competency" + (i + elementsOffset); //i+3 skips the self-mastery ones
+
     for (var opt = 1; opt < 6; opt++) {
       var option = document.createElement('option');
       option.value = opt;
       option.text = opt;
-      
-      if (employee_1[i+3].value === opt) { // Skipping the Self-Mastery ones with i+3
+
+      if (employee_1[i + elementsOffset].value === opt) { //i+3 skips the self-mastery ones
         option.selected = true;
       }
       selectItem.options.add(option);
@@ -244,4 +294,4 @@ window.onload = function(){
     var breakElement = document.createElement('br');
     form.appendChild(breakElement);
   }
-};
+}

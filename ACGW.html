@@ -11,21 +11,36 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
-        <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-core.min.js"></script>
-        <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-polar.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-core.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-polar.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-cartesian.min.js"></script>
         <script src="https://cdn.anychart.com/releases/8.11.1/themes/dark_glamour.min.js"></script>
-        <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-exports.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-exports.min.js"></script>
         <script src="ChartPolarACGW.js"></script>
     </head>
     <body style="background-color: white;">
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <form id="data">
+        <table>
+            <tr>
+                <td width="300" id="cellDataInput">
+                    <form id="data" width="300">
 
-        </form>
-        <input type="submit" value="Draw Wheel" onclick="drawWheel()">
-        <div id="container" style="width: 800px; height: 800px;"></div>
+                    </form>
+                    <input type="submit" value="Draw Wheel" style="margin-top: 10px" onclick="drawWheel()">
+
+                </td>
+                <td id="cellColumn">
+                    <div id="containerSelfMastery" style="width: 500px; height: 500px;"></div>
+                </td>
+                <td id="cellWheel">
+                    <div id="container" style="width: 700px; height: 700px;"></div>
+                </td>
+            </tr>
+        </table>
+
+
         <script src="" async defer></script>
     </body>
 </html>
