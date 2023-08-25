@@ -107,24 +107,33 @@ function makeSeriesData(employeeInput) {
   ];
 }
 
-function getFormData()
-{
-  for (var i = 0; i<competenciesWheel.length; i++) {
-    var competency = document.getElementById("competency" + (i+3));
+
+function getFormData() {
+  for (var i = 0; i < competenciesWheel.length + competenciesSelf.length; i++) {
+    var competency = document.getElementById("competency" + (i));
     var assessment = parseInt(competency.value);
-    employee_1[i+3].value = assessment;
+    employee_1[i].value = assessment;
   }
   return employee_1;
 }
 
+
 function drawWheel()
 {
 
-  var container = document.getElementById("container");
-  var chartNode = container.children[0];
-  if (chartNode != null) {
-    container.removeChild(chartNode);
+  
+  var container_ID = document.getElementById("container");
+  var chartNode_ID = container_ID.children[0];
+  if (chartNode_ID != null) {
+    container_ID.removeChild(chartNode_ID);
   }
+
+  var container_ID = document.getElementById("containerSelfMastery");
+  var chartNode_ID = container_ID.children[0];
+  if (chartNode_ID != null) {
+    container_ID.removeChild(chartNode_ID);
+  }
+
 
   employee_1 = getFormData();
 
@@ -228,7 +237,19 @@ function drawWheel()
 
 
   localStorage.setObj("self-assessment", employee_1);
+  
+  var parent_element = document.getElementById("cellWheel");
+  var existing_buttons = parent_element.querySelectorAll('button');
+  existing_buttons.forEach(function(button) {
+    parent_element.removeChild(button);
+  });
   addExportButton(chart, "Export wheel PNG", "wheel", "cellWheel");
+  
+  var parent_element = document.getElementById("cellColumn");
+  var existing_buttons = parent_element.querySelectorAll('button');
+  existing_buttons.forEach(function(button) {
+    parent_element.removeChild(button);
+  });
   addExportButton(chartSelf, "Export column PNG", "column", "cellColumn");
 }
 
